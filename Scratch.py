@@ -29,7 +29,6 @@ class SexySpider:
         os.chdir(config["scratchFileName"])
         self.rootDir = os.getcwd()
         for key in pageConfig["categories"]:
-            print("creating category data files: " + config["scratchFileName"] + "/" + key)
             if os.path.exists(key):
                 print("Category data files exists: " + config["scratchFileName"] + "/" + key)
             else:
@@ -38,6 +37,7 @@ class SexySpider:
 
     def getCategory(self, category):
         os.chdir(category)
+        print(os.getcwd())
         rawPage = self.loadPage(pageConfig["url"] + pageConfig["categories"][category])
         self.makeCategoryPageFile(category, rawPage)
         self.scratchCategory(category)
@@ -77,12 +77,11 @@ class SexySpider:
         carTitle = self.getCardTitle(rawPage)
         if os.path.exists(carTitle):
             print("card exists: " + carTitle)
-            os.chdir("../")
             return
         else:
             print("creating card: " + carTitle)
             os.mkdir(carTitle)
-        os.chdir(carTitle)
+            os.chdir(carTitle)
         with open(carTitle + '_page.txt', 'w') as pageFile:
             imageCount = 0
             pageFile.write(cardUrl + "\n")
