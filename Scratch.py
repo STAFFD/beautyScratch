@@ -89,7 +89,7 @@ class SexySpider:
                     try:
                         pic.write(self.getImageFromImageHolder(cardUrlName))
                     except Exception as e:
-                        msg = "Get image error. URL => " + cardUrlName + "\n" + e
+                        msg = "Get image error. URL => " + cardUrlName + "\n" + str(e)
                         self.log(msg)
                         continue
                     imageCount += 1
@@ -127,7 +127,7 @@ class SexySpider:
             categoryPage = self.opener.open(requestItem).read().decode(pageConfig["encode"])
             return categoryPage
         except Exception as e:
-            msg = "Load page error. URL => " + url + "\n" + e
+            msg = "Load page error. URL => " + url + "\n" + str(e)
             self.log(msg)
             return False
 

@@ -16,8 +16,8 @@ pageConfig = {
     "url": "http://www.mm131.com/",
 
     "categories": {
-        "sexy": "xinggan/",
         "pure": "qingchun/",
+        "sexy": "xinggan/",
         "carModel": "chemo/",
         "chiPao": "qipao/",
         "celebrity": "mingxing/",
