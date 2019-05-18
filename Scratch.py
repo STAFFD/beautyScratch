@@ -119,7 +119,10 @@ class SexySpider:
 
     def reMatch(self, content, reCode):
         pattern = re.compile(reCode)
-        return pattern.findall(content)
+        if type(content) == type(str) | type(content) == type(bytes):
+            return pattern.findall(content)
+        else:
+            return []
 
     def loadPage(self, url):
         try:
@@ -145,3 +148,4 @@ class SexySpider:
 if __name__ == '__main__':
     sexySpider = SexySpider()
     sexySpider.fuck()
+    # sexySpider.getImageFromImageHolder(pageConfig["url"] + pageConfig["categories"]["pure"] + "3245_44.html")
