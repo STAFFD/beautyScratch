@@ -53,7 +53,11 @@ class SexySpider:
 
     def getlistPageStart_n_Num(self, page):
         pageList = self.reMatch(page, reConfig['pages'])
-        number = self.reMatch(pageList[-1], reConfig['lastPage'])[-1]
+        number = self.reMatch(pageList[-1], reConfig['lastPage'])
+        if len(number):
+            number = number[0]
+        else:
+            return None, None
         if len(pageList) > 0 and len(number) > 0:
             return pageList[-1][:pageList[-1].find(number)], int(number) + 1
         else:
