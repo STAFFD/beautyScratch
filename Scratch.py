@@ -18,7 +18,7 @@ class SexySpider:
 
     def fuck(self):
         for category in pageConfig["categories"]:
-            sexySpider.getCategory(category)
+            self.getCategory(category)
 
     def makeRootDir(self):
         if os.path.exists(config["scratchFileName"]):
