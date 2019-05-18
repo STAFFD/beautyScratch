@@ -144,9 +144,11 @@ class SexySpider:
 
     def reMatch(self, content, reCode):
         pattern = re.compile(reCode)
-        if type(content) == type(str) or type(content) == type(bytes):
+        try:
             return pattern.findall(content)
-        else:
+        except Exception as e:
+            msg = "reMatch error. reCode => " + reCode + "\n" + str(e)
+            self.log(msg)
             return []
 
     def loadPage(self, url):
