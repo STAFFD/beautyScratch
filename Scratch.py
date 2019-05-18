@@ -47,13 +47,17 @@ class SexySpider:
         with open(category + '_page.txt', 'w') as pageFile:
             pageFile.writelines(pageConfig["url"] + pageConfig["categories"][category] + "\n")
             listStr, number = self.getlistPageStart_n_Num(page)
-            for page in range(2, number):
-                pageFile.writelines(pageConfig["url"] + listStr + str(page) + ".html\n")
+            if listStr and number:
+                for page in range(2, number):
+                    pageFile.writelines(pageConfig["url"] + listStr + str(page) + ".html\n")
 
     def getlistPageStart_n_Num(self, page):
         pageList = self.reMatch(page, reConfig['pages'])
         number = self.reMatch(pageList[-1], reConfig['lastPage'])[-1]
-        return pageList[-1][:pageList[-1].find(number)], int(number) + 1
+        if len(pageList) > 0 and len(number) > 0:
+            return pageList[-1][:pageList[-1].find(number)], int(number) + 1
+        else:
+            return None, None
 
     def grabCardPageFromListPages(self, listPageUrl):
         return self.reMatch(self.loadPage(listPageUrl), reConfig["pageMatch"])
@@ -79,8 +83,10 @@ class SexySpider:
             imageCount = 0
             pageFile.write(cardUrl + "\n")
             with open(str(imageCount) + '.jpg', 'wb') as pic:
-                pic.write(self.getImageFromImageHolder(cardUrl))
-                imageCount += 1
+                image = self.getImageFromImageHolder(cardUrl)
+                if image is not None:
+                    pic.write(image)
+                    imageCount += 1
             for count in range(2,int(self.getCardAmount(rawPage))):
                 cardUrlName = cardUrl[:-5] + '_' + str(count) + ".html"
                 pageFile.write(cardUrlName + "\n")
@@ -96,10 +102,18 @@ class SexySpider:
         os.chdir("../")
 
     def getCardTitle(self, rawPage):
-        return self.reMatch(rawPage, reConfig["cardTitle"])[0][4:-5]
+        matchList = self.reMatch(rawPage, reConfig["cardTitle"])
+        if len(matchList) > 0:
+            return matchList[0][4:-5]
+        else:
+            return ""
 
     def getCardAmount(self, rawPage):
-        return self.reMatch(rawPage, reConfig["cardHolderAmount"])[0][1:-1]
+        matchList = self.reMatch(rawPage, reConfig["cardHolderAmount"])
+        if len(matchList) > 0:
+            return matchList[0][1:-1]
+        else:
+            return 0
 
     #######################################################################################
     """ ##This session is for retrieving image from the page which is holding the image """
@@ -110,16 +124,23 @@ class SexySpider:
     def getImageFromRawPage(self, rawPage):
         imageUrl = self.scratchImageUrlFromPage(rawPage)
         print(imageUrl)
-        requestItem = Request(imageUrl, headers=imageConfig["header"])
-        return self.opener.open(requestItem).read()
+        if len(imageUrl) > 0:
+            requestItem = Request(imageUrl, headers=imageConfig["header"])
+            return self.opener.open(requestItem).read()
+        else:
+            return None
 
     def scratchImageUrlFromPage(self, rawPage):
-        return self.reMatch(rawPage, reConfig["image"])[0]
+        matchList = self.reMatch(rawPage, reConfig["image"])
+        if len(matchList) > 0:
+            return matchList[0]
+        else:
+            return ""
     ########################################################################################
 
     def reMatch(self, content, reCode):
         pattern = re.compile(reCode)
-        if type(content) == type(str) | type(content) == type(bytes):
+        if type(content) == type(str) or type(content) == type(bytes):
             return pattern.findall(content)
         else:
             return []
